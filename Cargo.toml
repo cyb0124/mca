@@ -1,0 +1,10 @@
+[package]
+name = "mca"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.82"
+bitstream-io = "2.2.0"
+byteorder = "1.5.0"
+named-binary-tag = "0.6.0"
