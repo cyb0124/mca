@@ -11,13 +11,35 @@ pub const CHUNKS_IN_MCA: usize = 32 * 32;
 pub const BLOCKS_IN_SECTION: usize = 16 * 16 * 16;
 pub const BIOMES_IN_SECTION: usize = 4 * 4 * 4;
 
+pub fn block_idx_to_section_local(mut idx: usize) -> (i32, i32, i32) {
+    let x = idx & 15;
+    idx >>= 4;
+    let z = idx & 15;
+    idx >>= 4;
+    (x as _, idx as _, z as _)
+}
+
+pub fn block_idx_to_global(idx: usize, chunk_x: i32, section_y: i8, chunk_z: i32) -> (i32, i32, i32) {
+    let (mut x, mut y, mut z) = block_idx_to_section_local(idx);
+    x += chunk_x << 4;
+    y += (section_y as i32) << 4;
+    z += chunk_z << 4;
+    (x, y, z)
+}
+
+#[derive(Default, Clone)]
 pub struct Chunk {
     pub data: Option<CompoundTag>,
     pub timestamp: u32,
 }
 
+#[derive(Clone)]
 pub struct MCA {
     pub chunks: Box<[Chunk]>,
+}
+
+impl Default for MCA {
+    fn default() -> Self { Self { chunks: (0..CHUNKS_IN_MCA).map(|_| Chunk::default()).collect() } }
 }
 
 impl MCA {
